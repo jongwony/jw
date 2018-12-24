@@ -1,3 +1,4 @@
+import mmap
 import contextlib
 import os
 import subprocess
@@ -22,10 +23,12 @@ class BioFile:
         self.meta = os.stat(path)
         self.content = None
 
-        # with open(path) as f:
-        #     view_char = config['DEFAULT'].get('VIEW_CHAR', 15)
-        #     with contextlib.suppress(UnicodeDecodeError):
-        #         self.content = f.read().strip()[:view_char]
+        if self.meta.st_size == 0:
+            return
+
+        with open(path, 'r+b') as f:
+            with contextlib.closing(mmap.mmap(f.fileno(), 0)) as mm:
+                self.content = mm.read()
 
     def __repr__(self):
         return f'<{self.path}, {datetime.fromtimestamp(self.meta.st_mtime)}>'
