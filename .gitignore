@@ -1,3 +1,5 @@
 .idea/
 files/
 db.sqlite3
+
+account.json
