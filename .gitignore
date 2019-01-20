@@ -1,5 +1,7 @@
+__pycache__/
+
 .idea/
 files/
-db.sqlite3
+elasticsearch/
 
 account.json

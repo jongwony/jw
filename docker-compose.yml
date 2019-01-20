@@ -1,4 +1,4 @@
-version: '3.7'
+version: '2.2'
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
@@ -6,6 +6,7 @@ services:
     environment:
       # present the params via docker env vars "-e"
       - cluster.name=docker-cluster
+      - "path.repo=/usr/share/elasticsearch/backups"
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
@@ -15,31 +16,15 @@ services:
     volumes:
       # bind-mount conf "-v"
       - esdata1:/usr/share/elasticsearch/data
+      - ./elasticsearch/data1:/usr/share/elasticsearch/data
+      - ./elasticsearch/backups:/usr/share/elasticsearch/backups
     ports:
       - 9200:9200
-    networks:
-      - esnet
-  elasticsearch2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
-    container_name: elasticsearch2
-    environment:
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "discovery.zen.ping.unicast.hosts=elasticsearch"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - esdata2:/usr/share/elasticsearch/data
     networks:
       - esnet
 
 volumes:
   esdata1:
-    driver: local
-  esdata2:
     driver: local
 
 networks:
