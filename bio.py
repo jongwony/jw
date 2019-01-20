@@ -3,18 +3,15 @@ import contextlib
 import os
 import subprocess
 import tempfile
-from configparser import ConfigParser
 from datetime import datetime
 from operator import attrgetter
 
-config = ConfigParser()
-config.read('config.ini')
+import config
 
-ROOT = config['DEFAULT']['ROOT']
-EDITOR = config['DEFAULT'].get('EDITOR', os.environ.get('EDITOR', 'vim'))
 
+root = config.DEFAULT['root']
 with contextlib.suppress(FileExistsError):
-    os.makedirs(ROOT)
+    os.makedirs(root)
 
 
 class BioFile:
@@ -44,13 +41,13 @@ def get_meta(root_dir: str) -> list:
 
 
 def temp(category: str = 'md') -> str:
-    suffix = config['CATEGORY'].get(category, category)
-    with tempfile.NamedTemporaryFile(suffix=f'.{suffix}', dir=ROOT,
+    suffix = config.CATEGORY.get(category, category)
+    with tempfile.NamedTemporaryFile(suffix=f'.{suffix}', dir=root,
                                      delete=False) as tf:
-        tf.write(config['TEMPLATE'][category])
+        tf.write(config.TEMPLATE[category])
         tf.flush()
 
-        subprocess.call([EDITOR, tf.name])
+        subprocess.call([config.DEFAULT['editor'], tf.name])
 
         edited = tf.read()
 
