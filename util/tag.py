@@ -7,7 +7,6 @@ from elasticsearch.helpers import bulk
 
 import config
 
-
 es = Elasticsearch()
 
 # deprecated type
@@ -31,7 +30,7 @@ def load():
     return bulk(es, makebulk(config.DEFAULT['root']))
 
 
-def add_file_tag(index, filename, tags):
+def add_file_tag(index, filename: str, tags: list):
     body = {
         'filename': filename,
         'tags': tags,
@@ -41,7 +40,7 @@ def add_file_tag(index, filename, tags):
     return es.index(index, doc_type, body)
 
 
-def _tag_op(index, _id, tags, *, op='union'):
+def _tag_op(index, _id, tags: list, *, op: str = 'union'):
     fetch = get_tag(index, _id)
     if not fetch['found']:
         return fetch

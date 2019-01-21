@@ -1,5 +1,5 @@
 # 한글 키도 입력 및 명령이 가능하여야 한다.
-from property import Mode
+from .property import Mode
 
 
 # 언제든 <ctrl+w> 로 종료할 수 있다.

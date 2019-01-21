@@ -1,7 +1,4 @@
 import enum
-import curses
-
-import key_event
 
 
 class WindowHierarchy:

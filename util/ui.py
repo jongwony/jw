@@ -1,7 +1,7 @@
 import curses
 
-import key_event
-from property import Mode
+from . import key_event
+from .property import Mode
 
 
 class Client:
