@@ -57,9 +57,3 @@ def iterm2_img_format(content, inline):
     result += b'\n'
 
     return result
-
-
-def print_image(content, inline=1, resize=None):
-    if resize is not None:
-        content = buffer_resize(content, resize)
-    print(iterm2_img_format(content, inline).decode())

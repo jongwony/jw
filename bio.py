@@ -34,8 +34,8 @@ class BioFile:
 def get_meta(root_dir: str) -> list:
     meta = []
     for dirpath, _, files in os.walk(root_dir):
-        for filename in files:
-            path = f'{dirpath}/{filename}'
+        for filepath in files:
+            path = f'{dirpath}/{filepath}'
             meta.append(BioFile(path))
     return sorted(meta, key=attrgetter('meta.st_mtime'), reverse=True)
 
@@ -43,6 +43,8 @@ def get_meta(root_dir: str) -> list:
 def temp(category: str = 'md') -> tuple:
     suffix = config.CATEGORY.get(category, category)
     template = config.TEMPLATE.get(category)
+    editor = config.DEFAULT['editor']
+
     if template:
         with open(template) as f:
             template_string = f.read()
@@ -51,11 +53,18 @@ def temp(category: str = 'md') -> tuple:
 
     with tempfile.NamedTemporaryFile(suffix=f'.{suffix}', dir=root,
                                      delete=False) as tf:
-        filename = tf.name
+        filepath = tf.name
         tf.write(template_string.encode())
         tf.flush()
 
-        subprocess.call([config.DEFAULT['editor'], filename])
+        subprocess.call([editor, '+set backupcopy=yes', filepath])
+
+        tf.seek(0)
         edited = tf.read()
 
-    return filename, edited
+    if len(edited) == len(template_string):
+        print(f'Not edited! deleted temp file.')
+        os.remove(filepath)
+        return ()
+
+    return filepath, edited
