@@ -1,9 +1,11 @@
+from os import path
 import sys
 from configparser import ConfigParser
 
 
 config = ConfigParser()
-config.read('config.ini')
+ini_path = path.join(path.dirname(path.abspath(__file__)), 'config.ini')
+config.read(ini_path)
 
 module = sys.modules[__name__]
 

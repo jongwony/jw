@@ -31,13 +31,17 @@ def get_content(content) -> bytes:
 
 
 def buffer_resize(raw_content, resize) -> bytes:
-    with Image.open(BytesIO(get_content(raw_content))) as origin:
-        fmt = origin.format
-        resized = origin.resize(resize)
-
-    with BytesIO() as buf:
-        resized.save(buf, format=fmt)
-        resized_content = buf.getvalue()
+    try:
+        with Image.open(BytesIO(get_content(raw_content))) as origin:
+            fmt = origin.format
+            resized = origin.resize(resize)
+    except OSError:
+        print('Invalid Image!')
+        resized_content = ''
+    else:
+        with BytesIO() as buf:
+            resized.save(buf, format=fmt)
+            resized_content = buf.getvalue()
 
     return resized_content
 

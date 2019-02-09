@@ -6,7 +6,7 @@ class CLITest(unittest.TestCase):
         pass
 
     def test_temp_file(self):
-        import biocli
+        import __main__
         pass
 
     def tearDown(self):
