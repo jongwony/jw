@@ -40,16 +40,9 @@ def get_meta(root_dir: str) -> list:
     return sorted(meta, key=attrgetter('meta.st_mtime'), reverse=True)
 
 
-def temp(category: str = 'md') -> tuple:
+def touch_temp(category, template_string):
     suffix = config.CATEGORY.get(category, category)
-    template = config.TEMPLATE.get(category)
     editor = config.DEFAULT['editor']
-
-    if template:
-        with open(template) as f:
-            template_string = f.read()
-    else:
-        template_string = ''
 
     with tempfile.NamedTemporaryFile(suffix=f'.{suffix}', dir=root,
                                      delete=False) as tf:
@@ -61,6 +54,20 @@ def temp(category: str = 'md') -> tuple:
 
         tf.seek(0)
         edited = tf.read()
+
+    return filepath, edited
+
+
+def temp(category: str = 'md') -> tuple:
+    template = config.TEMPLATE.get(category)
+
+    if template:
+        with open(template) as f:
+            template_string = f.read()
+    else:
+        template_string = ''
+
+    filepath, edited = touch_temp(category, template_string)
 
     if len(edited) == len(template_string):
         print(f'Not edited! deleted temp file.')
