@@ -4,4 +4,7 @@ __pycache__/
 files/
 elasticsearch/
 
-account.json
+
+bio.egg-info/
+build/
+dist/

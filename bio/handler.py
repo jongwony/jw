@@ -1,34 +1,54 @@
-import mmap
 import contextlib
+import mmap
 import os
 import subprocess
 import tempfile
 from datetime import datetime
 from operator import attrgetter
 
-import config
+from bio import config
+from util import tag
 
 
-root = config.DEFAULT['root']
+biotag = tag.init()
+root = config.get('root')
+editor = config.get('editor')
 with contextlib.suppress(FileExistsError):
     os.makedirs(root)
 
 
 class BioFile:
-    def __init__(self, path):
-        self.path = path
-        self.meta = os.stat(path)
+    def __init__(self):
+        self._id = None
+        self.path = None
+        self.meta = None
         self.content = None
+        self.tags = None
 
-        if self.meta.st_size == 0:
-            return
+    def change(self, _id):
+        self._id = _id
+        self.tags = biotag.get_tags(self._id)
+        filename = tag.extract_doc(self.tags, 'filename')
+        self.path = config.join_path(root, filename)
+        self.meta = os.stat(self.path)
 
-        with open(path, 'r+b') as f:
+    def open(self, _id):
+        self.change(_id)
+        with open(self.path, 'r+b') as f:
             with contextlib.closing(mmap.mmap(f.fileno(), 0)) as mm:
                 self.content = mm.read()
+        return self
+
+    def edit(self, _id):
+        self.change(_id)
+        with open(self.path, 'a+b') as f:
+            subprocess.call([editor, '+set backupcopy=yes', self.path])
+            f.seek(0)
+            self.content = f.read()
+        return self
 
     def __repr__(self):
-        return f'<{self.path}, {datetime.fromtimestamp(self.meta.st_mtime)}>'
+        return f'<{self.tags}, {self.path}, {datetime.fromtimestamp(self.meta.st_mtime)}>'
 
 
 def get_meta(root_dir: str) -> list:
@@ -36,13 +56,13 @@ def get_meta(root_dir: str) -> list:
     for dirpath, _, files in os.walk(root_dir):
         for filepath in files:
             path = f'{dirpath}/{filepath}'
+            # TODO: BioFile changed
             meta.append(BioFile(path))
     return sorted(meta, key=attrgetter('meta.st_mtime'), reverse=True)
 
 
 def touch_temp(category, template_string):
-    suffix = config.CATEGORY.get(category, category)
-    editor = config.DEFAULT['editor']
+    suffix = config.get_section('CATEGORY', category, fallback=category)
 
     with tempfile.NamedTemporaryFile(suffix=f'.{suffix}', dir=root,
                                      delete=False) as tf:
@@ -59,10 +79,10 @@ def touch_temp(category, template_string):
 
 
 def temp(category: str = 'md') -> tuple:
-    template = config.TEMPLATE.get(category)
+    template = config.get_section('TEMPLATE', category, fallback=None)
 
     if template:
-        with open(template) as f:
+        with open(config.join_path(template)) as f:
             template_string = f.read()
     else:
         template_string = ''
