@@ -10,6 +10,6 @@ setup(
     packages=find_packages(exclude=['tests*']),
     scripts=['biocli'],
     install_requires=['elasticsearch>=6.3.1', 'elasticsearch-dsl==6.3.1'],
-    package_data={'bio': ['config.ini', 'templates/*']},
+    package_data={'bio': ['config.ini', 'templates/*', 'scripts/*']},
     url='https://github.com/jongwony/bio',
 )
