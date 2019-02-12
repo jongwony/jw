@@ -1,9 +1,33 @@
 #!/usr/bin/env python3
 import json
 import argparse
+from subprocess import Popen, PIPE, call
 
-from bio import handler
+from bio import handler, config
 from util import tag, img, query
+
+
+def snip():
+    # TODO: modularize
+    def func(command, **kwargs):
+        op, *args = command
+        # getattr(module, op)(*args)
+        if op == 'cpq':
+            if args:
+                connection, db, *_ = args
+            else:
+                connection, db = config.get('dbgroup').split()
+
+            call(
+                f'pbpaste | mysql --defaults-group-suffix=_{connection}'
+                f' {db} | vim -u ~/.vimrc.more -',
+                shell=True)
+        else:
+            raise NotImplemented
+
+    p = subparsers.add_parser(snip.__name__)
+    p.add_argument('command', type=str, nargs='*')
+    p.set_defaults(func=func)
 
 
 def search():
@@ -78,5 +102,6 @@ if __name__ == '__main__':
     imgcat()
     search()
     edit()
+    snip()
     namespace = parser.parse_args()
     namespace.func(**vars(namespace))
