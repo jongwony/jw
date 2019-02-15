@@ -101,11 +101,13 @@ class CLIInit:
         return func
 
     @bioparser.register
-    @bioparser.add_argument('content', type=str)
+    @bioparser.add_argument('content', nargs='?', type=str)
     @bioparser.add_argument('--resize', nargs=2, type=int)
     @bioparser.add_argument('--inline', type=int, default=1)
     def imgcat(self):
         def func(content, inline=1, resize=None, **kwargs):
+            if content is None:
+                content = img.get_clipboard_image()
             if resize is not None:
                 content = img.buffer_resize(content, resize)
             print(img.iterm2_img_format(content, inline).decode())

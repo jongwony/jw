@@ -1,6 +1,7 @@
 import base64
 import binascii
 import os
+import platform
 from io import BytesIO, BufferedIOBase
 
 from PIL import Image
@@ -30,14 +31,23 @@ def get_content(content) -> bytes:
         return raw_content
 
 
+def get_clipboard_image() -> bytes:
+    if platform.system() == 'Darwin':
+        import AppKit
+        pb = AppKit.NSPasteboard.generalPasteboard()
+        pb_buf = pb.dataForType_(AppKit.NSPasteboardTypePNG)
+        if pb_buf:
+            return pb_buf.base64Encoding()
+    return b''
+
+
 def buffer_resize(raw_content, resize) -> bytes:
     try:
         with Image.open(BytesIO(get_content(raw_content))) as origin:
             fmt = origin.format
             resized = origin.resize(resize)
     except OSError:
-        print('Invalid Image!')
-        resized_content = ''
+        return b''
     else:
         with BytesIO() as buf:
             resized.save(buf, format=fmt)
@@ -46,7 +56,7 @@ def buffer_resize(raw_content, resize) -> bytes:
     return resized_content
 
 
-def iterm2_img_format(content, inline):
+def iterm2_img_format(content: bytes, inline) -> bytes:
     raw_content = get_content(content)
     size = len(raw_content)
     b64content = base64.b64encode(raw_content)
