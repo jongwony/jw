@@ -1,5 +1,5 @@
-import json
 import argparse
+import json
 from functools import wraps
 
 from bio import handler, snippet
@@ -16,6 +16,9 @@ class BioParser:
     def parse_args(self):
         return self._parser.parse_args()
 
+    def print_help(self):
+        return self._parser.print_help()
+
     def register(self, f):
         @wraps(f)
         def wrapper(*args, **kwargs):
@@ -23,6 +26,7 @@ class BioParser:
             result = f(*args, **kwargs)
             self._subparser.set_defaults(func=result)
             return result
+
         return wrapper
 
     def add_argument(self, *args, **kwargs):
@@ -31,7 +35,9 @@ class BioParser:
             def wrapper(*args_, **kwargs_):
                 self._subparser.add_argument(*args, **kwargs)
                 return f(*args_, **kwargs_)
+
             return wrapper
+
         return decorator
 
 
@@ -49,20 +55,28 @@ class CLIInit:
                 f(cls)
 
         namespace = cls.bioparser.parse_args()
-        namespace.func(**vars(namespace))
+        if hasattr(namespace, 'func'):
+            namespace.func(**vars(namespace))
+        else:
+            cls.bioparser.print_help()
 
     @bioparser.register
-    @bioparser.add_argument('command', type=str, nargs='*')
+    @bioparser.add_argument('command', type=str, nargs='*',
+                            help='custom snippet scripts: bio/scripts')
     def snip(self):
         def func(command, **kwargs):
             op, *args = command
             getattr(snippet, op)(*args)
+
         return func
 
     @bioparser.register
     @bioparser.add_argument('content', type=str)
-    @bioparser.add_argument('-j', '--json', dest='custom', action='store_true')
-    @bioparser.add_argument('-t', '--type', dest='dsl', type=str, default='term')
+    @bioparser.add_argument('-j', '--json', dest='custom', action='store_true',
+                            help='custom json stdin')
+    @bioparser.add_argument('-t', '--type', dest='dsl', type=str, default='term',
+                            help='|'.join(
+                                x for x in dir(query) if not x.startswith('_')))
     def search(self):
         def func(content: str, custom=False, dsl='term', **kwargs):
             if not custom:
@@ -71,6 +85,7 @@ class CLIInit:
                 content = json.loads(content)
             result = self.biotag.search(content)
             print(*tag.extract_search(result, 'tags'), sep='\n')
+
         return func
 
     @bioparser.register
@@ -83,10 +98,12 @@ class CLIInit:
             tags = input('Tags<space>: ').split()
             update_tags = self.biotag.union_tags(_id, tags)
             print(f'Tag {tag.extract_doc(update_tags, data="result")}')
+
         return func
 
     @bioparser.register
-    @bioparser.add_argument('category', nargs='?', default='md')
+    @bioparser.add_argument('category', nargs='?', default='md',
+                            help='file extension, load templates')
     def temp(self):
         def func(category, **kwargs):
             try:
@@ -98,12 +115,15 @@ class CLIInit:
                 tags = input('Tags<space>: ').split()
                 es_result = self.biotag.add_file_tags(filename, tags)
                 print(es_result)
+
         return func
 
     @bioparser.register
-    @bioparser.add_argument('content', nargs='?', type=str)
+    @bioparser.add_argument('content', nargs='?', type=str,
+                            help='None(clipboard) or base64 string or filename')
     @bioparser.add_argument('--resize', nargs=2, type=int)
-    @bioparser.add_argument('--inline', type=int, default=1)
+    @bioparser.add_argument('--inline', type=int, default=1,
+                            help='1(default): inline, 0: download')
     def imgcat(self):
         def func(content, inline=1, resize=None, **kwargs):
             if content is None:
@@ -111,4 +131,5 @@ class CLIInit:
             if resize is not None:
                 content = img.buffer_resize(content, resize)
             print(img.iterm2_img_format(content, inline).decode())
+
         return func
