@@ -41,24 +41,10 @@ class BioParser:
         return decorator
 
 
-class CLIInit:
+class CLIFunc:
     bioparser = BioParser()
-
     biotag = tag.init()
     biofile = handler.BioFile()
-
-    @classmethod
-    def main(cls):
-        for k in vars(cls):
-            f = getattr(cls, k)
-            if k != 'main' and callable(f):
-                f(cls)
-
-        namespace = cls.bioparser.parse_args()
-        if hasattr(namespace, 'func'):
-            namespace.func(**vars(namespace))
-        else:
-            cls.bioparser.print_help()
 
     @bioparser.register
     @bioparser.add_argument('command', type=str, nargs='*',
@@ -133,3 +119,18 @@ class CLIInit:
             print(img.iterm2_img_format(content, inline).decode())
 
         return func
+
+
+class CLIInit(CLIFunc):
+    @classmethod
+    def main(cls):
+        for k in vars(CLIFunc):
+            f = getattr(cls, k)
+            if callable(f):
+                f(cls)
+
+        namespace = cls.bioparser.parse_args()
+        if hasattr(namespace, 'func'):
+            namespace.func(**vars(namespace))
+        else:
+            cls.bioparser.print_help()
