@@ -4,6 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
+from bio.config import join_path
+
 
 def safe_tag(func):
     def wrapper(tag, attr):
@@ -11,6 +13,7 @@ def safe_tag(func):
         if not attr.startswith('_') and result is None:
             return Tag(name='div')
         return result
+
     return wrapper
 
 
@@ -18,7 +21,7 @@ Tag.__getattr__ = safe_tag(Tag.__getattr__)
 Tag.select_one = safe_tag(Tag.select_one)
 
 
-if __name__ == '__main__':
+def jira():
     doc = requests.get(
         'https://docs.atlassian.com/software/jira/docs/api/REST/latest/')
     soup = BeautifulSoup(doc.content, features='html5lib')
@@ -38,5 +41,12 @@ if __name__ == '__main__':
             })
         j.append(d)
 
-    with open('jira_api.json', 'w') as f:
+    with open(join_path('jira_api.json'), 'w') as f:
         json.dump(j, f, indent=2)
+
+
+def confluence():
+    doc = requests.get(
+        'https://developer.atlassian.com/cloud/confluence/rest/')
+    soup = BeautifulSoup(doc.content, features='html5lib')
+    resources = soup.select("section")

@@ -4,6 +4,7 @@ __pycache__/
 files/
 elasticsearch/
 
+*.json
 
 bio.egg-info/
 build/
