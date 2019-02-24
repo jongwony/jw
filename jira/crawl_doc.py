@@ -49,4 +49,22 @@ def confluence():
     doc = requests.get(
         'https://developer.atlassian.com/cloud/confluence/rest/')
     soup = BeautifulSoup(doc.content, features='html5lib')
-    resources = soup.select("section")
+    sections = soup.select("section")
+
+    j = []
+    for i, sec in enumerate(sections):
+        if i < 5:
+            continue
+        _id = sec.h3.get_text()
+        try:
+            name, path = sec.p.get_text().split()
+        except ValueError:
+            print(sec.p.get_text())
+            continue
+        body = sec.div.get_text()
+        j.append({
+            '_id': _id, 'name': name,
+            'path': path, 'body': body,
+        })
+    with open(join_path('confluence_api.json'), 'w') as f:
+        json.dump(j, f, indent=2)
