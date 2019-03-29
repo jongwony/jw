@@ -1,7 +1,7 @@
 """
 $ bio snip func args[0] args[1] ...
 """
-from subprocess import call
+from subprocess import call, Popen, PIPE
 from tempfile import NamedTemporaryFile
 
 from bio import config
@@ -24,7 +24,7 @@ def ed(*args):
         connection, db = config.get('dbgroup').split()
 
     cmd = 'y'
-    buffer = b''
+    buffer = b'SET NAMES utf8mb4;'
     while cmd == 'y':
         with NamedTemporaryFile() as tf:
             filepath = tf.name

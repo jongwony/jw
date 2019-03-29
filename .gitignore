@@ -5,6 +5,7 @@ files/
 elasticsearch/
 
 *.json
+db.sqlite3
 
 bio.egg-info/
 build/

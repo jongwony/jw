@@ -7,10 +7,10 @@ from datetime import datetime
 from operator import attrgetter
 
 from bio import config
-from util import tag
+from util import es_tag
 
 
-biotag = tag.init()
+biotag = es_tag.init()
 root = config.get('root')
 editor = config.get('editor')
 with contextlib.suppress(FileExistsError):
@@ -28,7 +28,7 @@ class BioFile:
     def change(self, _id):
         self._id = _id
         self.tags = biotag.get_tags(self._id)
-        filename = tag.extract_doc(self.tags, 'filename')
+        filename = es_tag.extract_doc(self.tags, 'filename')
         self.path = config.join_path(root, filename)
         self.meta = os.stat(self.path)
 
