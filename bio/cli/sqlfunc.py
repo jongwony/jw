@@ -17,12 +17,14 @@ class SQLiteFunc(GFunc):
     def search(self):
         def func(content: str, custom=False, **kwargs):
             if not custom:
-                s = select([fs]).where(fs.c)
-                content = getattr(query, dsl)(content)
+                pass
+                # s = select([fs]).where(fs.c)
+                # content = getattr(query, dsl)(content)
             else:
-                content = json.loads(content)
+                pass
+                # content = json.loads(content)
             result = self.biotag.search(content)
-            print()
+            print(result)
 
         return func
 
