@@ -5,14 +5,14 @@ from .sql_model import *
 
 
 def get_tags(_id):
-    return pd.read_sql_query(fs.join(tag).select([
-        fs.id,
-        fs.filename,
-        fs.host,
-        tag.id,
-        tag.name,
-        tag.counter,
-    ]).where(
+    return pd.read_sql_query(sa.select([
+        fs.c.id,
+        fs.c.filename,
+        fs.c.host,
+        tag.c.id,
+        tag.c.name,
+        tag.c.counter,
+    ]).select_from(fs.join(tag)).where(
         fs.id == _id
     ), engine)
 
@@ -50,13 +50,13 @@ def purge_tags(_id):
 
 
 def search(content):
-    return pd.read_sql_query(fs.join(tag).select([
-        fs.id,
-        fs.filename,
-        fs.host,
-        fs.tag_id,
-        tag.name,
-        tag.counter,
-    ]).where(
+    return pd.read_sql_query(sa.select([
+        fs.c.id,
+        fs.c.filename,
+        fs.c.host,
+        fs.c.tag_id,
+        tag.c.name,
+        tag.c.counter,
+    ]).select_from(fs.join(tag)).where(
         tag.c.name.like(f'%{content}%')
     ), engine)

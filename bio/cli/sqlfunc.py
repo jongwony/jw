@@ -1,5 +1,3 @@
-from sqlalchemy.sql import select
-
 from bio import handler
 from util import sql_tag
 from .gfunc import GFunc
@@ -28,6 +26,7 @@ class SQLiteFunc(GFunc):
 
         return func
 
+    # TODO: EDIT, DEL
     @bioparser.register
     @bioparser.add_argument('_id', type=str)
     def edit(self):
@@ -57,4 +56,3 @@ class SQLiteFunc(GFunc):
                 print(es_result)
 
         return func
-
