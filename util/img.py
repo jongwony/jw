@@ -56,7 +56,7 @@ def buffer_resize(raw_content, resize) -> bytes:
     return resized_content
 
 
-def iterm2_img_format(content: bytes, inline) -> bytes:
+def iterm2_img_format(content, inline=1) -> bytes:
     raw_content = get_content(content)
     size = len(raw_content)
     b64content = base64.b64encode(raw_content)

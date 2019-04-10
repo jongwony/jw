@@ -2,7 +2,9 @@ import socket
 
 import sqlalchemy as sa
 
-engine = sa.create_engine('sqlite:///db.sqlite3', echo=True)
+from bio.config import join_path
+
+engine = sa.create_engine(f"sqlite:///{join_path('db.sqlite3')}", echo=True)
 meta = sa.MetaData()
 
 fs = sa.Table(
