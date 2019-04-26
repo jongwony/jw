@@ -10,7 +10,8 @@ setup(
     packages=find_packages(exclude=['tests*']),
     scripts=['biocli'],
     install_requires=['elasticsearch>=6.3.1', 'elasticsearch-dsl==6.3.1',
-                      'requests', 'bs4', 'sqlalchemy', 'pandas'],
+                      'requests', 'bs4', 'sqlalchemy', 'pandas', 'pygments',
+                      'pyfiglet'],
     package_data={'bio': ['config.ini', 'templates/*', 'scripts/*']},
     url='https://github.com/jongwony/bio',
 )
