@@ -12,8 +12,8 @@ from pygments.lexers import guess_lexer, get_lexer_by_name
 from pygments.lexers.special import TextLexer
 from pygments.util import ClassNotFound
 
-from .util.getch import getch
 from imgcat.img import iterm2_img_format
+from .util.getch import getch
 
 term_size = shutil.get_terminal_size()
 
@@ -78,16 +78,15 @@ def figlet(m):
     sys.stdout.flush()
 
 
-regex_domain = {
-    re.compile(r'!\[.*\]\((.*?)\)'): images,
-    re.compile(r'```([a-z]*)\n([\s\S]*?)\n```'): pre,
-    re.compile(r'#(#{0,5}) (.*)'): figlet,
-}
-
-
-def main():
+def slideshow(md):
     global term_size
-    with open(sys.argv[1]) as f:
+    regex_domain = {
+        re.compile(r'!\[.*\]\((.*?)\)'): images,
+        re.compile(r'```([a-z]*)\n([\s\S]*?)\n```'): pre,
+        re.compile(r'#(#{0,5}) (.*)'): figlet,
+    }
+
+    with open(md) as f:
         data = f.read()
     split_list = re.split(r'^---$', data, flags=re.M)
 
@@ -110,3 +109,7 @@ def main():
     sys.stdout.write('END!')
     sys.stdout.flush()
     ch = transition()
+
+
+def main():
+    slideshow(sys.argv[1])

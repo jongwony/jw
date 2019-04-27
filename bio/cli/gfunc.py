@@ -1,5 +1,11 @@
-from imgcat import img
+"""
+IMPORTANT
+closure function must include **kwargs
+bio.cli.__init__: namespace.func
+"""
 from bio import snippet
+from imgcat import img
+from md2ppt.feature import slideshow
 from .parser import BioParser
 
 
@@ -32,3 +38,10 @@ class GFunc:
 
         return func
 
+    @bioparser.register
+    @bioparser.add_argument('markdown', type=str, help='Markdown to PPT')
+    def md2ppt(self):
+        def func(markdown, **kwargs):
+            slideshow(markdown)
+
+        return func
