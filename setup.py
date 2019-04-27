@@ -2,11 +2,10 @@ from setuptools import setup, find_packages
 
 
 class Packages:
-    es = ['elasticsearch>=6.3.1', 'elasticsearch-dsl==6.3.1']
     crawl = ['requests', 'bs4']
     iterm = ['pygments', 'pyfiglet']
     sql = ['sqlalchemy', 'pandas']
-    all = es + crawl + iterm + sql
+    all = crawl + iterm + sql
 
 
 setup(
@@ -22,5 +21,5 @@ setup(
     extras_require={k: v for k, v in Packages.__dict__.items()
                     if not k.startswith('__')},
     package_data={'bio': ['config.ini', 'templates/*', 'scripts/*']},
-    url='https://github.com/jongwony/bio',
+    url='https://github.com/jongwony/jw',
 )
