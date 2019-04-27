@@ -1,10 +1,9 @@
+import os
 import socket
 
 import sqlalchemy as sa
 
-from bio.config import join_path
-
-engine = sa.create_engine(f"sqlite:///{join_path('db.sqlite3')}", echo=True)
+engine = sa.create_engine(f"sqlite:///{os.path.expanduser('~/.jw.sqlite3')}")
 meta = sa.MetaData()
 
 fs = sa.Table(
@@ -39,4 +38,6 @@ synonym = sa.Table(
     sa.Column('ctime', sa.DATETIME, server_default=sa.func.now())
 )
 
-meta.create_all(engine)
+
+def init():
+    meta.create_all(engine)

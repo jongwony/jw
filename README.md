@@ -18,8 +18,8 @@ import pandas as pd
 pd.read_csv('asdf')
 ```
 
-```git
-git add -p
+```sql
+select 1+1 from dual;
 ```
 
 ---

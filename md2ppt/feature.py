@@ -12,8 +12,8 @@ from pygments.lexers import guess_lexer, get_lexer_by_name
 from pygments.lexers.special import TextLexer
 from pygments.util import ClassNotFound
 
-from util.getch import getch
-from util.img import iterm2_img_format
+from .util.getch import getch
+from imgcat.img import iterm2_img_format
 
 term_size = shutil.get_terminal_size()
 
@@ -52,7 +52,7 @@ def code_glyph(code, lexer=None, border=True):
 def transition():
     char = getch()
     if char == ':':
-        command = input()
+        command = input(':')
     os.system('clear')
     return char
 
@@ -86,12 +86,14 @@ regex_domain = {
 
 
 def main():
+    global term_size
     with open(sys.argv[1]) as f:
         data = f.read()
     split_list = re.split(r'^---$', data, flags=re.M)
 
     os.system('clear')
     for slide in split_list:
+        term_size = shutil.get_terminal_size()
         matched = chain(*[re.finditer(pattern, slide)
                           for pattern in regex_domain])
         matched = sorted(matched, key=methodcaller('start'))

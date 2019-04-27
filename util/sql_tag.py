@@ -5,6 +5,7 @@ from .sql_model import *
 
 
 def get_tags(_id):
+    init()
     return pd.read_sql_query(sa.select([
         fs.c.id,
         fs.c.filename,
@@ -18,6 +19,7 @@ def get_tags(_id):
 
 
 def add_file_tags(filename: str, tags: list):
+    init()
     with engine.begin():
         for t in tags:
             stmt = tag.select().where(tag.c.name == t)
@@ -50,6 +52,7 @@ def purge_tags(_id):
 
 
 def search(content):
+    init()
     return pd.read_sql_query(sa.select([
         fs.c.id,
         fs.c.filename,

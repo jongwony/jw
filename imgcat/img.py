@@ -71,3 +71,8 @@ def iterm2_img_format(content, inline=1) -> bytes:
     result += b'\n'
 
     return result
+
+
+def main():
+    content = get_clipboard_image()
+    print(iterm2_img_format(content, 1).decode())

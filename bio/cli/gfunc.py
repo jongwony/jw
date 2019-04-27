@@ -1,4 +1,4 @@
-from util import img
+from imgcat import img
 from bio import handler, snippet
 from .parser import BioParser
 

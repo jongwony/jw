@@ -25,7 +25,7 @@ def makebulk(directory, index, doc):
 
 
 def load():
-    return bulk(es, makebulk(config.get('root'), config.get('__main__.py'),
+    return bulk(es, makebulk(config.get('root'), config.get('feature.py'),
                              config.get('_doc')))
 
 

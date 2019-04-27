@@ -1,17 +1,26 @@
 from setuptools import setup, find_packages
 
+
+class Packages:
+    es = ['elasticsearch>=6.3.1', 'elasticsearch-dsl==6.3.1']
+    crawl = ['requests', 'bs4']
+    iterm = ['pygments', 'pyfiglet']
+    sql = ['sqlalchemy', 'pandas']
+    all = es + crawl + iterm + sql
+
+
 setup(
-    name='bio',
-    version='1.0',
+    name='jw',
+    version='0.1',
     description='I just want to search and write my notes'
                 'regardless of their file name ...',
     author='jongwony',
     author_email='lastone9182@gmail.com',
     packages=find_packages(exclude=['tests*']),
-    scripts=['biocli'],
-    install_requires=['elasticsearch>=6.3.1', 'elasticsearch-dsl==6.3.1',
-                      'requests', 'bs4', 'sqlalchemy', 'pandas', 'pygments',
-                      'pyfiglet'],
+    scripts=['jw'],
+    install_requires=[],
+    extras_require={k: v for k, v in Packages.__dict__.items()
+                    if not k.startswith('__')},
     package_data={'bio': ['config.ini', 'templates/*', 'scripts/*']},
     url='https://github.com/jongwony/bio',
 )

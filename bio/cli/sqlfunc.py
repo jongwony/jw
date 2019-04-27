@@ -52,7 +52,7 @@ class SQLiteFunc(GFunc):
                 return
             else:
                 tags = input('Tags<space>: ').split()
-                es_result = self.biotag.add_file_tags(filename, tags)
-                print(es_result)
+                result = self.biotag.add_file_tags(filename, tags)
+                print(result)
 
         return func
