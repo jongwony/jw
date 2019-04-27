@@ -11,7 +11,7 @@ class Packages:
 
 setup(
     name='jw',
-    version='0.1',
+    version='0.2',
     description='I just want to search and write my notes'
                 'regardless of their file name ...',
     author='jongwony',
