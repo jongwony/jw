@@ -10,7 +10,7 @@ class Packages:
 
 setup(
     name='jw',
-    version='0.2',
+    version='0.3',
     description='I just want to search and write my notes'
                 'regardless of their file name ...',
     author='jongwony',
