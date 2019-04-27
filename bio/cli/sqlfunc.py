@@ -5,7 +5,6 @@ from .gfunc import GFunc
 
 class SQLiteFunc(GFunc):
     bioparser = GFunc.bioparser
-    biofile = GFunc.biofile
     biotag = sql_tag
 
     @bioparser.register
@@ -31,12 +30,7 @@ class SQLiteFunc(GFunc):
     @bioparser.add_argument('_id', type=str)
     def edit(self):
         def func(_id, **kwargs):
-            result = self.biofile.edit(_id)
-            print(f'Changed {result.path}')
-            print(f'Current tags: {tag.extract_doc(result.tags, "tags")}')
-            tags = input('Tags<space>: ').split()
-            update_tags = self.biotag.union_tags(_id, tags)
-            print(f'Tag {tag.extract_doc(update_tags, data="result")}')
+            pass
 
         return func
 

@@ -1,6 +1,6 @@
 import pandas as pd
 
-from .misc import relative_path
+from bio.config import root_path
 from .sql_model import *
 
 
@@ -34,7 +34,7 @@ def add_file_tags(filename: str, tags: list):
                 stmt = tag.insert().values(name=t)
             tag_id = engine.execute(stmt).lastrowid
             stmt = fs.insert().values(
-                filename=relative_path(filename), tag_id=tag_id
+                filename=root_path(filename), tag_id=tag_id
             )
             engine.execute(stmt)
 

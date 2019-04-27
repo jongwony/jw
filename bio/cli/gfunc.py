@@ -1,11 +1,10 @@
 from imgcat import img
-from bio import handler, snippet
+from bio import snippet
 from .parser import BioParser
 
 
 class GFunc:
     bioparser = BioParser()
-    biofile = handler.BioFile()
 
     @bioparser.register
     @bioparser.add_argument('command', type=str, nargs='*',
