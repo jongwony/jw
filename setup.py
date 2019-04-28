@@ -3,6 +3,8 @@ from setuptools import setup, find_packages
 
 class Packages:
     crawl = ['requests', 'bs4']
+    google = ['google-api-python-client', 'google-auth-httplib2',
+              'google-auth-oauthlib']
     clipboard = ['pyobjc']
 
 
