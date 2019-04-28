@@ -1,11 +1,10 @@
 from bio import handler
-from util import sql_tag
+from util import sql_tag, sql_core
 from .gfunc import GFunc
 
 
 class SQLiteFunc(GFunc):
     bioparser = GFunc.bioparser
-    biotag = sql_tag
 
     @bioparser.register
     @bioparser.add_argument('content', type=str)
@@ -14,23 +13,26 @@ class SQLiteFunc(GFunc):
     def search(self):
         def func(content: str, custom=False, **kwargs):
             if not custom:
-                pass
-                # s = select([fs]).where(fs.c)
-                # content = getattr(query, dsl)(content)
+                result = sql_tag.search(content)
             else:
-                pass
-                # content = json.loads(content)
-            result = self.biotag.search(content)
+                result = sql_tag.custom_search(content)
             print(result)
 
         return func
 
-    # TODO: EDIT, DEL, LIST ALL(TAG, FILE)
+    # TODO: DEL, LIST ALL(TAG, FILE)
     @bioparser.register
     @bioparser.add_argument('_id', type=str)
     def edit(self):
         def func(_id, **kwargs):
-            pass
+            try:
+                meta, content = sql_core.edit(int(_id))
+                print(f'Saved {meta}')
+            except ValueError:
+                return
+            else:
+                tags = input('Tags<space>: ').split()
+                sql_tag.union_tags(_id, tags)
 
         return func
 
@@ -46,7 +48,6 @@ class SQLiteFunc(GFunc):
                 return
             else:
                 tags = input('Tags<space>: ').split()
-                result = self.biotag.add_file_tags(filename, tags)
-                print(result)
+                sql_tag.add_file_tags(filename, tags)
 
         return func
