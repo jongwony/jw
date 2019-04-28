@@ -25,7 +25,7 @@ class SQLiteFunc(GFunc):
 
         return func
 
-    # TODO: EDIT, DEL
+    # TODO: EDIT, DEL, LIST ALL(TAG, FILE)
     @bioparser.register
     @bioparser.add_argument('_id', type=str)
     def edit(self):

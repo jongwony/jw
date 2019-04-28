@@ -3,6 +3,7 @@ from setuptools import setup, find_packages
 
 class Packages:
     crawl = ['requests', 'bs4']
+    clipboard = ['pyobjc']
 
 
 setup(

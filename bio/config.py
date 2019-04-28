@@ -15,6 +15,7 @@ def root_path(*p):
     return path.join(root, *p)
 
 
+# TODO: config.ini ~/.jw.ini
 script_path = path.dirname(path.abspath(__file__))
 ini = ConfigParser()
 ini_path = join_path('config.ini')
