@@ -55,14 +55,11 @@ def search(content):
     init()
     return pd.read_sql_query(sa.select([
         files.c.id,
-        files.c.filename,
-        files.c.host,
-        files.c.tag_id,
-        tag.c.name,
-        tag.c.counter,
-    ]).select_from(files.join(tag)).where(
+        files.c.path,
+        sa.func.group_concat(tag.c.name).label('tags'),
+    ]).select_from(files.join(history).join(tag)).where(
         tag.c.name.like(f'%{content}%')
-    ), engine)
+    ).group_by(files.c.id), engine)
 
 
 def custom_search(sql):
