@@ -5,7 +5,7 @@ import sys
 from itertools import chain
 from operator import methodcaller
 
-from pyfiglet import figlet_format
+from pyfiglet import print_figlet
 from pygments import highlight
 from pygments.formatters.terminal256 import Terminal256Formatter
 from pygments.lexers import guess_lexer, get_lexer_by_name
@@ -52,7 +52,7 @@ def code_glyph(code, lexer=None, border=True):
 def transition():
     char = getch()
     if char == ':':
-        return input(':')
+        char = input(':')
     os.system('clear')
     return char
 
@@ -74,8 +74,17 @@ def images(m):
 
 def figlet(m):
     size, title = m.groups()
-    sys.stdout.write(figlet_format(title))
-    sys.stdout.flush()
+    print_figlet(title, colors='WHITE:')
+
+
+def controller(ch, cur):
+    if ch == 'q':
+        raise StopIteration
+
+    if ch.isdigit():
+        return int(ch)
+
+    return cur + 1
 
 
 def slideshow(md):
@@ -91,8 +100,11 @@ def slideshow(md):
     split_list = re.split(r'^---$', data, flags=re.M)
 
     os.system('clear')
-    for slide in split_list:
+    slide_idx = 0
+    while slide_idx < len(split_list):
+        slide = split_list[slide_idx]
         term_size = shutil.get_terminal_size()
+        print(format(f'slide: {slide_idx}', f'>{term_size.columns}'))
         matched = chain(*[re.finditer(pattern, slide)
                           for pattern in regex_domain])
         matched = sorted(matched, key=methodcaller('start'))
@@ -104,11 +116,14 @@ def slideshow(md):
             idx = m.end()
         sys.stdout.write(slide[idx:])
         sys.stdout.flush()
-        ch = transition()
+        try:
+            slide_idx = controller(transition(), slide_idx)
+        except StopIteration:
+            break
 
     sys.stdout.write('END!')
     sys.stdout.flush()
-    ch = transition()
+    transition()
 
 
 def main():
