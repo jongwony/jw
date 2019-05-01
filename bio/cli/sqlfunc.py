@@ -20,7 +20,19 @@ class SQLiteFunc(GFunc):
 
         return func
 
-    # TODO: DEL, LIST ALL(TAG, FILE)
+    @bioparser.register
+    @bioparser.add_argument('-t', '--tag', action='store_true',
+                            help='list all tag')
+    def ls(self):
+        def func(**kwargs):
+            if kwargs.get('tag'):
+                print(sql_tag.custom_search('tag'))
+            else:
+                print(sql_tag.custom_search('files'))
+
+        return func
+
+    # TODO: DEL
     @bioparser.register
     @bioparser.add_argument('_id', type=str)
     def edit(self):

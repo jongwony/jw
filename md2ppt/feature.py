@@ -46,13 +46,13 @@ def code_glyph(code, lexer=None, border=True):
         for sentence, origin in
         zip(hl_code.rstrip().split('\n'), code.rstrip().split('\n'))
     )
-    return f'{header}{hl_box}\n{footer}'
+    return f'{header}{hl_box}{footer}'
 
 
 def transition():
     char = getch()
     if char == ':':
-        command = input(':')
+        return input(':')
     os.system('clear')
     return char
 
