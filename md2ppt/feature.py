@@ -73,8 +73,19 @@ def images(m):
 
 
 def figlet(m):
-    size, title = m.groups()
-    print_figlet(title, colors='WHITE:')
+    extra, title = m.groups()
+    if extra == '':
+        print_figlet(
+            title, colors='WHITE:',
+            width=term_size.columns, justify='center'
+        )
+    elif extra == '#':
+        print_figlet(
+            title, font='banner', colors='WHITE:',
+            width=term_size.columns
+        )
+    else:
+        print_figlet(title, font='3x5', colors='WHITE:', width=term_size.columns)
 
 
 def controller(ch, cur):
@@ -104,7 +115,7 @@ def slideshow(md):
     while slide_idx < len(split_list):
         slide = split_list[slide_idx]
         term_size = shutil.get_terminal_size()
-        print(format(f'slide: {slide_idx}', f'>{term_size.columns}'))
+        print(f'slide: {slide_idx}'.rjust(term_size.columns))
         matched = chain(*[re.finditer(pattern, slide)
                           for pattern in regex_domain])
         matched = sorted(matched, key=methodcaller('start'))

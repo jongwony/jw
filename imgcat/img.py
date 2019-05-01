@@ -56,7 +56,8 @@ def buffer_resize(raw_content, resize) -> bytes:
     return resized_content
 
 
-def iterm2_img_format(content, inline=1) -> bytes:
+def iterm2_img_format(content, inline=1, preserve=1,
+                      width=None, height=None) -> bytes:
     raw_content = get_content(content)
     size = len(raw_content)
     b64content = base64.b64encode(raw_content)
@@ -64,7 +65,12 @@ def iterm2_img_format(content, inline=1) -> bytes:
     result = osc
     result += b'1337;File='
     result += b'size=%s;' % bytes(str(size).encode())
-    result += b'inline=%s' % bytes(str(inline).encode())
+    result += b'inline=%s;' % bytes(str(inline).encode())
+    if width is not None:
+        result += b'width=%s;' % bytes(str(width).encode())
+    if height is not None:
+        result += b'height=%s;' % bytes(str(height).encode())
+    result += b'preserveAspectRatio=%s;' % bytes(str(preserve).encode())
     result += b':'
     result += b'%s' % b64content
     result += st
