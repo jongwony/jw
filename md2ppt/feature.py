@@ -59,7 +59,12 @@ def transition():
 
 def pre(m, border=True):
     lexer, code = m.groups()
-    sys.stdout.write(code_glyph(code, lexer, border))
+    if lexer in ['gv', 'graphviz']:
+        from graphviz import Source
+        gv = Source(code)
+        sys.stdout.write(iterm2_img_format(gv.pipe('png')))
+    else:
+        sys.stdout.write(code_glyph(code, lexer, border))
     sys.stdout.flush()
 
 
