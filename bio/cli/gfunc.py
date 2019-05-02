@@ -35,7 +35,7 @@ class GFunc:
                 content = img.get_clipboard_image()
             if resize is not None:
                 content = img.buffer_resize(content, resize)
-            print(img.iterm2_img_format(content, inline).decode())
+            print(img.iterm2_img_format(content, inline))
 
         return func
 

@@ -66,7 +66,7 @@ def pre(m, border=True):
 def images(m):
     sentence = m.group(1)
     try:
-        sys.stdout.write(iterm2_img_format(sentence).decode())
+        sys.stdout.write(iterm2_img_format(sentence))
     except Exception:
         sys.stdout.write(sentence)
     sys.stdout.flush()

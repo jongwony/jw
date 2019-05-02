@@ -57,7 +57,7 @@ def buffer_resize(raw_content, resize) -> bytes:
 
 
 def iterm2_img_format(content, inline=1, preserve=1,
-                      width=None, height=None) -> bytes:
+                      width=None, height=None) -> str:
     raw_content = get_content(content)
     size = len(raw_content)
     b64content = base64.b64encode(raw_content)
@@ -76,9 +76,9 @@ def iterm2_img_format(content, inline=1, preserve=1,
     result += st
     result += b'\n'
 
-    return result
+    return result.decode()
 
 
 def main():
     content = get_clipboard_image()
-    print(iterm2_img_format(content, 1).decode())
+    print(iterm2_img_format(content, 1))
