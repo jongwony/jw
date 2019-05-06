@@ -1,47 +1,28 @@
-# Test
+# Bio Project
 
-asdf
+My Own CLI
 
-## Test2
+## Requirements
 
-paragraph
+Python 3.7+
 
----
-
-# Next
-
-paragraph
-
-
-```python
-import pandas as pd
-pd.read_csv('asdf')
-```
-
-```sql
-select 1+1 from dual;
-```
-
----
-
-# Next 2
-
-![](tests/170409.jpg)
-
-paragraph
-
----
-
-## ?
-
-제 컴에서는 잘 되는데요.
+## Setup
 
 ```bash
-sudo rm -rf /
+pip install jw
+jw --help
 ```
 
----
+## Build
 
-# Thank you!
+```
+python setup.py install
+```
 
-![](tests/file_from_ios_190414_150204.gif)
+## Feature
+
+- imgcat
+- tag memo system
+- snippet
+- markdown to presentation
+- google calendar
