@@ -3,7 +3,9 @@ IMPORTANT
 closure function must include **kwargs
 bio.cli.__init__: namespace.func
 """
-from bio import snippet
+from subprocess import call
+
+from bio import snippet, config
 from cal.console_calendar import main_parser
 from imgcat import img
 from md2ppt.feature import slideshow
@@ -19,7 +21,10 @@ class GFunc:
     def snip(self):
         def func(command, **kwargs):
             op, *args = command
-            getattr(snippet, op)(*args)
+            try:
+                getattr(snippet, op)(*args)
+            except AttributeError:
+                call([config.join_path('scripts', f'{op}.sh'), *args])
 
         return func
 

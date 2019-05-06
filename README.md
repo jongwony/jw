@@ -26,3 +26,29 @@ python setup.py install
 - snippet
 - markdown to presentation
 - google calendar
+
+## Create Your Own CLI
+
+```python
+# create bio/cli/yourfunc.py
+from bio.cli.gfunc import GFunc
+class YourFunc(GFunc):
+    bioparser = GFunc.bioparser
+    @bioparser.register
+    @bioparser.add_argument('your_argument', type=str)
+    def your_command(self):
+        def func(your_argument, **kwargs):
+            """main function"""
+            pass
+        return func
+```
+
+and just build it!
+
+## Your Own Snippet
+
+Put Bash Script in `scripts`
+
+```bash
+jw snip <your bash script> args...
+```
