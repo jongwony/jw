@@ -52,18 +52,3 @@ Put Bash Script in `scripts`
 ```bash
 jw snip <your bash script> args...
 ```
-
-## md2ppt Graphviz support
-
-```
-# test.md
-` ```graphviz
-  digraph "test" { rankdir=LR; 1 -> 2 -> 3 -> lob }
-` ```
-```
-
-```
-jw md2ppt test.md
-```
-
-![](tests/graphviz_demo.png)

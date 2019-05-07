@@ -8,7 +8,7 @@ from subprocess import call
 from bio import snippet, config
 from cal.console_calendar import main_parser
 from imgcat import img
-from md2ppt.feature import slideshow
+from md2ppt.feature import slide_show
 from .parser import BioParser
 
 
@@ -48,7 +48,7 @@ class GFunc:
     @bioparser.add_argument('markdown', type=str, help='Markdown to PPT')
     def md2ppt(self):
         def func(markdown, **kwargs):
-            slideshow(markdown)
+            slide_show(markdown)
 
         return func
 
