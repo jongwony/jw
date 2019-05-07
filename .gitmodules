@@ -1,3 +1,6 @@
 [submodule "cal"]
 	path = cal
 	url = https://github.com/jongwony/cal.git
+[submodule "md2ppt"]
+	path = md2ppt
+	url = https://github.com/jongwony/md2ppt.git
