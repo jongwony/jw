@@ -7,6 +7,6 @@ elasticsearch/
 *.json
 db.sqlite3
 
-bio.egg-info/
+*.egg-info/
 build/
 dist/
