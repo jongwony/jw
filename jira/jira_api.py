@@ -108,11 +108,47 @@ def archive(data):
         json.dump(data, f, indent=2)
 
 
+jql_template = {
+    'related_me': '(reporter was currentUser() OR watcher = currentUser() '
+                  'OR assignee was currentUser() OR summary ~ currentUser() '
+                  'OR description ~ currentUser() OR comment ~ currentUser())',
+    'me': 'assignee = currentUser()',
+    'unresolved': 'resolution = Unresolved',
+    'weekly_resolved': '(resolved >= -1w OR status changed to closed AFTER -1w)'
+}
+
+
+def easy_jql(s):
+    jql = s.format(**jql_template)
+    print(jql)
+    return jql
+
+
+def pipe_search(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        return pipe_jq(json.dumps(result))
+
+    return wrapper
+
+
+@pipe_search
 def search_me():
-    issues = search('assignee = currentUser() AND resolution = Unresolved',
-                    method='get')
-    issues = json.dumps(issues)
-    return pipe_jq(issues)
+    jql = easy_jql('{me} AND {unresolved}')
+    return search(jql, method='get')
+
+
+@pipe_search
+def search_related():
+    jql = easy_jql('{unresolved} AND {related_me}')
+    return search(jql, method='get')
+
+
+@pipe_search
+def last_resolved():
+    jql = easy_jql('{me} and {weekly_resolved}')
+    return search(jql, method='get')
 
 
 def pipe_jq(data):
