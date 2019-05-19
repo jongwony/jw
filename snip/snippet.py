@@ -5,7 +5,7 @@ from subprocess import call
 from tempfile import NamedTemporaryFile
 
 import config
-from . import join
+from .util import join
 
 
 def cpq(*args):

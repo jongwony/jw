@@ -1,13 +1,8 @@
 from argparse import ArgumentParser
-from os import path
 from subprocess import call
 
 from . import snippet
-
-
-def join(*paths):
-    script = path.dirname(path.abspath(__file__))
-    return path.join(script, *paths)
+from .util import join
 
 
 def main(args=None):
