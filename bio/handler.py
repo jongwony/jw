@@ -2,7 +2,7 @@ import os
 from subprocess import call
 from tempfile import NamedTemporaryFile
 
-from bio import config
+import config
 
 editor = config.get('editor')
 
@@ -10,7 +10,7 @@ editor = config.get('editor')
 def touch_temp(category, template_string):
     suffix = config.get_section('CATEGORY', category, fallback=category)
 
-    with NamedTemporaryFile(suffix=f'.{suffix}', dir=config.root_path(),
+    with NamedTemporaryFile(suffix=f'.{suffix}', dir=config.document_path(),
                             delete=False) as tf:
         filepath = tf.name
         tf.write(template_string.encode())
@@ -28,7 +28,7 @@ def temp(category: str = 'md') -> tuple:
     template = config.get_section('TEMPLATE', category, fallback=None)
 
     if template:
-        with open(config.join_path(template)) as f:
+        with open(config.document_path(template)) as f:
             template_string = f.read()
     else:
         template_string = ''
@@ -44,7 +44,7 @@ def temp(category: str = 'md') -> tuple:
 
 
 def edit(path):
-    with open(config.root_path(path), 'a+b') as f:
+    with open(config.document_path(path), 'a+b') as f:
         call([editor, '+set backupcopy=yes', path])
         f.seek(0)
         buffer = f.read()

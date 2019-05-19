@@ -78,7 +78,3 @@ def iterm2_img_format(content, inline=1, preserve=1,
 
     return result.decode()
 
-
-def main():
-    content = get_clipboard_image()
-    print(iterm2_img_format(content, 1))

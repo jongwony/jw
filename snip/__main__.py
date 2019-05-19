@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
 import sys
 
-from _cli.driver import main
+from . import main
 
 
 if __name__ == '__main__':

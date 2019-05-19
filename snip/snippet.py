@@ -1,10 +1,11 @@
 """
 $ bio snip func args[0] args[1] ...
 """
-from subprocess import call, Popen, PIPE
+from subprocess import call
 from tempfile import NamedTemporaryFile
 
-from bio import config
+import config
+from . import join
 
 
 def cpq(*args):
@@ -13,7 +14,7 @@ def cpq(*args):
     else:
         connection, db = config.get('dbgroup').split()
 
-    call([config.join_path('scripts', 'cpq.sh'), connection, db])
+    call([join('scripts', 'cpq.sh'), connection, db])
 
 
 def ed(*args):
@@ -36,7 +37,7 @@ def ed(*args):
             buffer = tf.read()
 
             call([
-                config.join_path('scripts', 'ed.sh'),
+                join('scripts', 'ed.sh'),
                 connection,
                 db,
                 filepath,

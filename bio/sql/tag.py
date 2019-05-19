@@ -1,6 +1,6 @@
 import pandas as pd
 
-from .sql_model import *
+from .model import *
 
 
 def get_tags(_id):

@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from bio.config import join_path
+from config import document_path
 
 
 def safe_tag(func):
@@ -41,7 +41,7 @@ def jira():
             })
         j.append(d)
 
-    with open(join_path('jira_api.json'), 'w') as f:
+    with open(document_path('jira_api.json'), 'w') as f:
         json.dump(j, f, indent=2)
 
 
@@ -66,5 +66,5 @@ def confluence():
             '_id': _id, 'name': name,
             'path': path, 'body': body,
         })
-    with open(join_path('confluence_api.json'), 'w') as f:
+    with open(document_path('confluence_api.json'), 'w') as f:
         json.dump(j, f, indent=2)

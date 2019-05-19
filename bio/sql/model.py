@@ -2,9 +2,9 @@ import socket
 
 import sqlalchemy as sa
 
-from bio.config import root_path
+from config import document_path
 
-engine = sa.create_engine(f"sqlite:///{root_path('.jw.sqlite3')}")
+engine = sa.create_engine(f"sqlite:///{document_path('.jw.sqlite3')}")
 meta = sa.MetaData()
 
 files = sa.Table(

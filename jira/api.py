@@ -1,6 +1,4 @@
 import json
-import sys
-from argparse import ArgumentParser
 from functools import wraps
 from subprocess import run, PIPE
 from urllib.parse import urlencode
@@ -9,7 +7,7 @@ import pandas as pd
 import requests
 from requests.auth import HTTPBasicAuth
 
-from bio.config import join_path, get_section
+from config import document_path, get_section
 
 
 def api_url(path, **kwargs):
@@ -19,7 +17,7 @@ def api_url(path, **kwargs):
 
 
 def load(file='jira_api.json'):
-    with open(join_path(file)) as f:
+    with open(document_path(file)) as f:
         data = json.load(f)
     return data
 
@@ -167,16 +165,4 @@ def pipe_jq(data):
                       columns=['Key', 'Status', 'Updated', 'Summary']).applymap(
         lambda x: x.strip('"'), )
     df['Updated'] = pd.to_datetime(df['Updated'])
-    return df.sort_values('Updated')
-
-
-def main(func, *args):
-    return eval(func)(*args)
-
-
-if __name__ == '__main__':
-    parser = ArgumentParser()
-    parser.add_argument('command', nargs='*')
-    parsed_args = parser.parse_args()
-    fname, *a = parsed_args.command
-    sys.exit(main(fname, *a))
+    print(df.sort_values('Updated'))

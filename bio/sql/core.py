@@ -1,7 +1,7 @@
 import pandas as pd
 
 from bio import handler
-from .sql_model import *
+from .model import *
 
 
 def edit(_id):

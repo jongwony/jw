@@ -3,7 +3,7 @@ import json
 import requests
 from requests.auth import HTTPBasicAuth
 
-from bio.config import join_path
+from config import document_path
 
 
 def api_url(path, **kwargs):
@@ -14,7 +14,7 @@ def api_url(path, **kwargs):
 
 
 def load(file='confluence_api.json'):
-    with open(join_path(file)) as f:
+    with open(document_path(file)) as f:
         data = json.load(f)
     return data
 
