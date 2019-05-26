@@ -19,7 +19,7 @@ def get_tags(_id):
 def add_file_tags(filename: str, tags: list):
     init()
     with engine.begin():
-        file_stmt = files.insert().values(path=root_path(filename))
+        file_stmt = files.insert().values(path=document_path(filename))
         file_id = engine.execute(file_stmt).lastrowid
         union_tags(file_id, tags)
 

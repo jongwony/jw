@@ -161,8 +161,12 @@ def pipe_jq(data):
     p4 = run(['jq', '.issues[].fields.updated'], input=data.encode(),
              stdout=PIPE)
     res4 = p4.stdout.decode().split('\n')
-    df = pd.DataFrame(list(zip(res1, res2, res4, res3)),
-                      columns=['Key', 'Status', 'Updated', 'Summary']).applymap(
-        lambda x: x.strip('"'), )
+    p5 = run(['jq', '.issues[].fields.resolution.name'], input=data.encode(),
+             stdout=PIPE)
+    res5 = p5.stdout.decode().split('\n')
+    df = pd.DataFrame(
+        list(zip(res1, res2, res4, res5, res3)),
+        columns=['Key', 'Status', 'Updated', 'Resolution', 'Summary']
+    ).applymap(lambda x: x.strip('"'))
     df['Updated'] = pd.to_datetime(df['Updated'])
     print(df.sort_values('Updated'))
