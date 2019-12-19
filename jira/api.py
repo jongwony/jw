@@ -1,4 +1,5 @@
 import json
+import webbrowser
 from functools import wraps
 from subprocess import run, PIPE
 from urllib.parse import urlencode
@@ -55,6 +56,7 @@ def auth(func):
             **req_param,
             auth=HTTPBasicAuth(jira_auth['username'], jira_auth['token'])
         )
+        print(response.content)
         return json.loads(response.content)
 
     return wrapper
@@ -99,6 +101,26 @@ def get_issue(key):
 
 def search(jql, method):
     return api_call('/rest/api/3/search', method, url_param={'jql': jql})
+
+
+def group(method, group_name):
+    from pprint import pprint
+    x = api_call('/rest/api/3/group/member', method, url_param={'groupname': group_name})
+    pprint(x)
+
+
+def help(product):
+    links = {
+        'confluence': 'https://developer.atlassian.com/cloud/confluence/rest/',
+        'jira': 'https://developer.atlassian.com/cloud/jira/platform/rest/v3/',
+    }
+    webbrowser.open(links[product])
+
+
+def teams():
+    x = api_call('/rest/api/3/groupuserpicker', 'GET')
+    from pprint import pprint
+    pprint(x)
 
 
 def archive(data):
