@@ -16,7 +16,7 @@ setup(
     scripts=['jw'],
     install_requires=['sqlalchemy', 'pandas', 'Pillow', 'pygments', 'pyfiglet',
                       'google-api-python-client', 'google-auth-httplib2',
-                      'google-auth-oauthlib', 'pyobjc'],
+                      'google-auth-oauthlib', 'pyobjc', 'requests'],
     extras_require={k: v for k, v in Packages.__dict__.items()
                     if not k.startswith('__')},
     package_data={'bio': ['config.ini', 'templates/*', 'scripts/*']},

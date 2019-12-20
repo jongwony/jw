@@ -1,6 +1,6 @@
 import os
 import webbrowser
-from contextlib import contextmanager
+from operator import attrgetter
 
 from slacker import Slacker
 
@@ -12,8 +12,8 @@ def help():
 def api(name, *args):
     token_path = os.path.expanduser(os.path.join('~', 'Documents', '.jw', 'slack.token'))
     with open(token_path) as f:
-        token = f.read()
+        token = f.read().strip()
     bot = Slacker(token)
-    return eval(f'bot.{name}')(*args)
-
-
+    kwargs = {(argv := arg.split('='))[0]: argv[1] for arg in args if '=' in arg}
+    args = [arg for arg in args if '=' not in arg]
+    return attrgetter(name)(bot)(*args, **kwargs)
