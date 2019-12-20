@@ -8,4 +8,4 @@ def main(args=None):
     parser.add_argument('command', nargs='*')
     parsed_args = parser.parse_args(args)
     func, *argument = parsed_args.command
-    return eval(func)(*argument)
+    return globals()[func](*argument)

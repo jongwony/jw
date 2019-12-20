@@ -82,6 +82,15 @@ def api_call(_id, method=None, fmt_param=None, url_param=None, req_param=None):
     return name, path, req_param
 
 
+@auth
+def api(name, path, *args):
+    kwargs = {(argv := arg.split('='))[0]: argv[1] for arg in args if '=' in arg}
+    args = [arg for arg in args if '=' not in arg]
+    assert not args, f'Positional arguments "{args}" must not required.'
+    url = api_url(path) + '?' + urlencode(kwargs)
+    return name, url, {}
+
+
 def create_meta(project_ids=None, project_keys=None, issue_type_ids=None,
                 issue_type_names=None, expand=None):
     # TODO: keyword argument delegate
