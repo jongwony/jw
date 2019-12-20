@@ -14,6 +14,6 @@ def api(name, *args):
     with open(token_path) as f:
         token = f.read().strip()
     bot = Slacker(token)
-    kwargs = {(argv := arg.split('='))[0]: argv[1] for arg in args if '=' in arg}
+    kwargs = {(argv := arg.split('=', 1))[0]: argv[1] for arg in args if '=' in arg}
     args = [arg for arg in args if '=' not in arg]
     return attrgetter(name)(bot)(*args, **kwargs)

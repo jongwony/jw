@@ -84,7 +84,7 @@ def api_call(_id, method=None, fmt_param=None, url_param=None, req_param=None):
 
 @auth
 def api(name, path, *args):
-    kwargs = {(argv := arg.split('='))[0]: argv[1] for arg in args if '=' in arg}
+    kwargs = {(argv := arg.split('=', 1))[0]: argv[1] for arg in args if '=' in arg}
     args = [arg for arg in args if '=' not in arg]
     assert not args, f'Positional arguments "{args}" must not required.'
     url = api_url(path) + '?' + urlencode(kwargs)
