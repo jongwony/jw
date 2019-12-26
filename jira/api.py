@@ -1,9 +1,11 @@
 import json
 import webbrowser
+from datetime import datetime, timedelta
 from functools import wraps
 from subprocess import run, PIPE
 from urllib.parse import urlencode
 
+import jmespath
 import pandas as pd
 import requests
 from requests.auth import HTTPBasicAuth
@@ -13,7 +15,7 @@ from config import document_path, get_section
 
 def api_url(path, **kwargs):
     """only url kwargs"""
-    host = 'http://' + get_section('JIRA', 'url')
+    host = 'https://' + get_section('JIRA', 'url')
     return host + path.format(**kwargs)
 
 
@@ -30,21 +32,6 @@ def get(_id, *key):
                 return [m[k] for k in key]
 
 
-def search_help(k):
-    # TODO: vim vmore and hlsearch
-    for d in load():
-        for m in d['method']:
-            if k in m['_id'] or k in m['path'] or k in m['body']:
-                print(f'***** {m["_id"]} *****')
-                print(m['name'], m['path'])
-                print(m['body'].partition('.')[0])
-
-
-def get_help(_id):
-    # TODO: vmore
-    print(get(_id, 'body'))
-
-
 def auth(func):
     jira_auth = load('jira_auth.json')
 
@@ -56,8 +43,11 @@ def auth(func):
             **req_param,
             auth=HTTPBasicAuth(jira_auth['username'], jira_auth['token'])
         )
-        print(response.content)
-        return json.loads(response.content)
+        try:
+            print(response.text)
+            return json.loads(response.content)
+        except Exception:
+            raise response.raise_for_status()
 
     return wrapper
 
@@ -89,6 +79,31 @@ def api(name, path, *args):
     assert not args, f'Positional arguments "{args}" must not required.'
     url = api_url(path) + '?' + urlencode(kwargs)
     return name, url, {}
+
+
+def create_data_task(summary, reporter="Issue Templates for Jira", assignee="최종원 Jongwon Choi", duedate=None):
+    if duedate is None:
+        duedate = datetime.today().date() + timedelta(days=7)
+        duedate = duedate.strftime('%Y-%m-%d')
+    user_list = api_call('/rest/api/3/users/search', 'get', url_param={'maxResults': 500})
+    user_list = jmespath.search('[].[displayName, accountId]', user_list)
+    user_map = dict(user_list)
+    data = {
+        "fields": {
+            "summary": summary,
+            "issuetype": {"id": "10014"},
+            "project": {"id": "10057"},
+            "reporter": {"id": user_map[reporter]},
+            "labels": ["templates"],
+            "duedate": duedate,
+            "assignee": {"id": user_map[assignee]}
+        }
+    }
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    }
+    return api_call('/rest/api/3/issue', 'post', req_param={'json': data, 'headers': headers})
 
 
 def create_meta(project_ids=None, project_keys=None, issue_type_ids=None,
