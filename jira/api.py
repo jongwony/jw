@@ -78,6 +78,7 @@ def api(name, path, *args):
     args = [arg for arg in args if '=' not in arg]
     assert not args, f'Positional arguments "{args}" must not required.'
     url = api_url(path) + '?' + urlencode(kwargs)
+    print(url)
     return name, url, {}
 
 
