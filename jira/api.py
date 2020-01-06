@@ -14,7 +14,7 @@ from config import document_path, get_section
 
 
 def api_url(path, **kwargs):
-    """only url kwargs"""
+    # preserve 405 http error
     host = 'https://' + get_section('JIRA', 'url')
     return host + path.format(**kwargs)
 
@@ -52,7 +52,6 @@ def auth(func):
     return wrapper
 
 
-# https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-rest-api-3-jql-match-post
 @auth
 def api_call(_id, method=None, fmt_param=None, url_param=None, req_param=None):
     if fmt_param is None:
@@ -72,14 +71,19 @@ def api_call(_id, method=None, fmt_param=None, url_param=None, req_param=None):
     return name, path, req_param
 
 
-@auth
 def api(name, path, *args):
-    kwargs = {(argv := arg.split('=', 1))[0]: argv[1] for arg in args if '=' in arg}
+    url_kwargs = {(argv := arg.split('&=', 1))[0]: argv[1] for arg in args if '&=' in arg}
+    req_kwargs = {(argv := arg.split('@=', 1))[0]: argv[1] for arg in args if '@=' in arg}
+
+    # preserve 415 error
+    headers = {"Accept": "application/json"}
+    if name.upper() == 'POST':
+        headers["Content-Type"] = "application/json"
+    req_kwargs.update({'headers': headers})
+
     args = [arg for arg in args if '=' not in arg]
     assert not args, f'Positional arguments "{args}" must not required.'
-    url = api_url(path) + '?' + urlencode(kwargs)
-    print(url)
-    return name, url, {}
+    return api_call(path, name, url_param=url_kwargs, req_param=req_kwargs)
 
 
 def create_data_task(summary, reporter="Issue Templates for Jira", assignee="최종원 Jongwon Choi", duedate=None):

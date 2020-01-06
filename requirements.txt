@@ -1,3 +1,4 @@
+slacker
 jmespath
 sqlalchemy
 pandas
