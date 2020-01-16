@@ -2,7 +2,7 @@ import base64
 import binascii
 import os
 import platform
-from io import BytesIO, BufferedIOBase
+from io import BytesIO, BufferedIOBase, TextIOBase
 
 from PIL import Image
 
@@ -17,7 +17,7 @@ def get_content(content) -> bytes:
         return content
 
     # file-like object
-    if isinstance(content, BufferedIOBase):
+    if isinstance(content, (BufferedIOBase, TextIOBase)):
         return content.read()
 
     # str
