@@ -1,4 +1,6 @@
 import sys
+import requests
+from io import BytesIO
 from functools import partial
 from argparse import ArgumentParser, FileType
 
@@ -9,12 +11,11 @@ def main(args=None):
     parser = ArgumentParser()
     parser.add_argument('--graphviz', action='store_true')
     parser.add_argument('--clipboard', action='store_true')
-    parser.add_argument('--base64', action='store_true')
+    parser.add_argument('--web', action='store_true')
     parser.add_argument('--width', type=str)
     parser.add_argument('--height', type=str)
     parser.add_argument('--preserve', type=str)
-    parser.add_argument('--binary', action='store_true')
-    parser.add_argument('infile', nargs='?', type=FileType('rb'),
+    parser.add_argument('infile', nargs='?', type=str,
                         help='a graphviz file to be validated or pretty-printed',
                         default=sys.stdin)
     parser.add_argument('outfile', nargs='?', type=FileType('w'),
@@ -24,7 +25,7 @@ def main(args=None):
 
     graphviz = parsed_args.graphviz
     clipboard = parsed_args.clipboard
-    base64 = parsed_args.base64
+    web = parsed_args.web
     width = parsed_args.width
     height = parsed_args.height
     preserve = parsed_args.preserve
@@ -35,14 +36,16 @@ def main(args=None):
 
     output = partial(iterm2_img_format, preserve=preserve, width=width, height=height)
 
-    with infile, outfile:
+    with outfile:
         if graphviz:
             from graphviz import Source
-            gv = Source(infile.read())
+            with infile:
+                gv = Source(infile.read())
             outfile.write(output(gv.pipe('png')))
         elif clipboard:
             outfile.write(output(get_clipboard_image()))
-        elif base64:
-            outfile.write(output(infile.read()))
+        elif web:
+            resp = requests.get(infile)
+            outfile.write(output(BytesIO(resp.content)))
         else:
             outfile.write(output(infile))
