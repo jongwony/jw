@@ -9,9 +9,9 @@ def main(args=None):
     parser.add_argument('--graphviz', action='store_true')
     parser.add_argument('--clipboard', action='store_true')
     parser.add_argument('--base64', action='store_true')
-    parser.add_argument('-w', '--width', type=str)
-    parser.add_argument('-h', '--height', type=str)
-    parser.add_argument('-p', '--preserve', type=str)
+    parser.add_argument('--width', type=str)
+    parser.add_argument('--height', type=str)
+    parser.add_argument('--preserve', type=str)
     parser.add_argument('infile', nargs='?', type=FileType(),
                         help='a graphviz file to be validated or pretty-printed',
                         default=sys.stdin)
