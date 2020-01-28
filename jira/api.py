@@ -2,6 +2,7 @@ import json
 import webbrowser
 from datetime import datetime, timedelta
 from functools import wraps
+from pprint import pprint
 from subprocess import run, PIPE
 from urllib.parse import urlencode
 
@@ -44,7 +45,6 @@ def auth(func):
             auth=HTTPBasicAuth(jira_auth['username'], jira_auth['token'])
         )
         try:
-            print(response.text)
             return json.loads(response.content)
         except Exception:
             raise response.raise_for_status()
@@ -133,7 +133,6 @@ def search(jql, method):
 
 
 def group(method, group_name):
-    from pprint import pprint
     x = api_call('/rest/api/3/group/member', method, url_param={'groupname': group_name})
     pprint(x)
 
@@ -148,7 +147,6 @@ def help(product):
 
 def teams():
     x = api_call('/rest/api/3/groupuserpicker', 'GET')
-    from pprint import pprint
     pprint(x)
 
 
@@ -169,7 +167,7 @@ jql_template = {
 
 def easy_jql(s):
     jql = s.format(**jql_template)
-    print(jql)
+    pprint(jql)
     return jql
 
 
@@ -185,6 +183,12 @@ def pipe_search(func):
 @pipe_search
 def search_me():
     jql = easy_jql('{me} AND {unresolved}')
+    return search(jql, method='get')
+
+
+@pipe_search
+def today_closed():
+    jql = easy_jql('{me} AND (status changed to resolved AFTER -1d OR status changed to closed AFTER -1d)')
     return search(jql, method='get')
 
 
@@ -220,4 +224,4 @@ def pipe_jq(data):
         columns=['Key', 'Status', 'Updated', 'Resolution', 'Summary']
     ).applymap(lambda x: x.strip('"'))
     df['Updated'] = pd.to_datetime(df['Updated'])
-    print(df.sort_values('Updated'))
+    pprint(df.sort_values('Updated'))
